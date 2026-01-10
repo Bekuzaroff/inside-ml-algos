@@ -1,43 +1,63 @@
 import numpy as np
-import matplotlib.pyplot as plt
-from sklearn.metrics import mean_squared_error
-##linear regression 
 
 
-X = np.random.rand(100, 1)
-y = 4 + 3 * X + np.random.rand(100, 1) # so our thetas equal 4 and 3
-# plt.plot(X, y, "b.")
-# plt.xlabel("$x_1$", fontsize=18)
-# plt.ylabel("$y$", rotation=0, fontsize=18)
-# plt.axis([0, 2, 0, 15])
-# plt.show()
 
 
-X_b = np.c_[np.ones((100, 1)), X] # adding x0 attrs to every sample
-theta = np.linalg.inv(X_b.T.dot(X_b)).dot(X_b.T).dot(y) ## normal equatation
-theta2 = np.linalg.pinv(X_b).dot(y) ## SVD
-print(theta, theta2)
+# linear regression
+class LinearRegression:
+    def __init__(self):
+        self._theta = None
 
-# testing
-# print(theta)
-# X_new = np.array([0, 2])
-# X_new_b = np.c_[np.ones((2,1)), X_new]
+    @property
+    def theta(self):
+        return self._theta
+    
+    @theta.setter
+    def theta(self, value):
+        self._theta = value
 
-# y_predict = X_new_b.dot(theta)
-# print(y_predict)
+    def predict(self, x):
+            if self._theta is None:
+                raise ValueError("you have not fitted model yet")
+            return x.dot(self._theta)
+    
+    def fit_normal_equ(self, X, y):
+        X_b = np.c_[np.ones((X.shape[0], 1)), X]
+        value = np.linalg.inv(X_b.T.dot(X_b)).dot(X_b.T).dot(y)
+        self._theta = value
 
-# y_predict = X_b.dot(theta) 
-# print(mean_squared_error(y, y_predict))
-# print(y[:5], y_predict[:5])
+    def fit_svd(self, X, y):
+        X_b = np.c_[np.ones((X.shape[0], 1)), X]
+        value = np.linalg.pinv(X_b).dot(y)
+        self._theta = value
+    
 
-# gradient descent
-eta = 0.1
-n_iters = 1000
-m = 100
 
-theta = np.random.randn(2,1)
 
-for iter in range(n_iters):
-    gradients = 2/m * X_b.T.dot(X_b.dot(theta) - y)
-    theta = theta - eta * gradients
-print(theta)
+
+X = 2 * np.random.rand(100, 1)
+y = 3 + 4 * X + np.random.randn(100, 1)
+
+lin_reg = LinearRegression()
+lin_reg.fit_normal_equ(X, y)
+# lin_reg.fit_svd(X, y)
+
+# test
+test_sample = np.random.rand(1, 1)
+test_y = 3 + 4 * test_sample + np.random.randn(1, 1)
+test_sample_b = np.c_[np.ones((1, 1)), test_sample]
+
+print(test_y)
+print(lin_reg.predict(test_sample_b))
+
+
+
+
+
+
+
+
+
+
+
+
