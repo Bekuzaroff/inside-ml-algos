@@ -41,7 +41,32 @@ class SGDRegressor:
                   self.theta = self.theta - self.learning_rate * gradients
                   
         
+    def fit_mini_batch(self, X, y, batch_size=5):
+        X_b = np.c_[np.ones((X.shape[0], 1)), X]
+        
+        rows = X_b.shape[0]
+        columns = X_b.shape[1]
+        
+        self.theta = np.random.randn(columns, 1)
+        
+        for epoch in range(self.max_iters):
+            indices = np.random.permutation(rows)  # Перемешиваем индексы
+            
+            for start_idx in range(0, rows, batch_size):
+                end_idx = min(start_idx + batch_size, rows)
+                batch_indices = indices[start_idx:end_idx]
+                
+                x_mb = X_b[batch_indices]
+                y_mb = y[batch_indices]
+                
+                # Вычисляем градиент
+                m_batch = x_mb.shape[0]
+                gradients = 2/m_batch * x_mb.T.dot(x_mb.dot(self.theta) - y_mb)
+                self.theta = self.theta - self.learning_rate * gradients
+        
 
+                   
+                   
     def predict(self, x):
          return x.dot(self.theta)
     
@@ -100,7 +125,8 @@ X = 2 * np.random.rand(100, 1)
 y = 3 + 4 * X + np.random.randn(100, 1)
 
 sgd = SGDRegressor(0.1, 1000)
-sgd.fit_batch(X, y)
+# sgd.fit_batch(X, y)
+sgd.fit_mini_batch(X, y)
 # sgd.fit_stochastic(X, y)
 
 # test
