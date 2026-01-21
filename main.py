@@ -1,6 +1,22 @@
 import numpy as np
 
 
+# Regularization
+
+class Ridge:
+    def __init__(self, a):
+        self.a = a
+        self.theta = None
+
+    def fit(self, X, y):
+        X_b = np.c_[np.ones((X.shape[0], 1)), X]
+        A = np.identity(X_b.shape[1])
+        theta = np.linalg.inv(X_b.T.dot(X_b) + self.a * A).dot(X_b.T).dot(y)
+        self.theta = theta
+
+
+    def predict(self, x):
+        return x.dot(self.theta)
 
 # SGD
 class SGDRegressor:
@@ -49,7 +65,7 @@ class SGDRegressor:
         
         self.theta = np.random.randn(columns, 1)
         
-        for epoch in range(self.max_iters):
+        for _ in range(self.max_iters):
             indices = np.random.permutation(rows)  # Перемешиваем индексы
             
             for start_idx in range(0, rows, batch_size):
@@ -121,21 +137,37 @@ class LinearRegression:
 # print(test_y)
 # print(lin_reg.predict(test_sample_b))
 
-X = 2 * np.random.rand(100, 1)
-y = 3 + 4 * X + np.random.randn(100, 1)
+# X = 2 * np.random.rand(100, 1)
+# y = 3 + 4 * X + np.random.randn(100, 1)
 
-sgd = SGDRegressor(0.1, 1000)
-# sgd.fit_batch(X, y)
-sgd.fit_mini_batch(X, y)
-# sgd.fit_stochastic(X, y)
+# sgd = SGDRegressor(0.1, 1000)
+# # sgd.fit_batch(X, y)
+# sgd.fit_mini_batch(X, y)
+# # sgd.fit_stochastic(X, y)
 
-# test
-test_sample = np.random.rand(1, 1)
-test_y = 3 + 4 * test_sample + np.random.randn(1, 1)
-test_sample_b = np.c_[np.ones((1, 1)), test_sample]
+# # test
+# test_sample = np.random.rand(1, 1)
+# test_y = 3 + 4 * test_sample + np.random.randn(1, 1)
+# test_sample_b = np.c_[np.ones((1, 1)), test_sample]
 
-print(test_y)
-print(sgd.predict(test_sample_b))
+# print(test_y)
+# print(sgd.predict(test_sample_b))
+
+# X = 2 * np.random.rand(100, 1)
+# y = 3 + 4 * X + np.random.randn(100, 1)
+
+# ridge = Ridge(0.1)
+# # sgd.fit_batch(X, y)
+# ridge.fit(X, y)
+# # sgd.fit_stochastic(X, y)
+
+# # test
+# test_sample = np.random.rand(1, 1)
+# test_y = 3 + 4 * test_sample + np.random.randn(1, 1)
+# test_sample_b = np.c_[np.ones((1, 1)), test_sample]
+
+# print(test_y)
+# print(ridge.predict(test_sample_b))
 
 
 
